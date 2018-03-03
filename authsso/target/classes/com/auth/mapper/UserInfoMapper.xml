@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.dao.UserInfoMapper">
+	<resultMap id="BaseResultMap" type="com.auth.entity.UserInfo">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="note" jdbcType="VARCHAR" property="note" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, code, note
+	</sql>
+	<select id="LoginValid" resultType="com.auth.entity.UserInfo"
+		parameterType="com.auth.condition.LoginCondition">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user
+		where eisdel=0
+		<include refid="query_condition" />
+	</select>
+	<sql id="query_condition">
+		<if test="name != null">
+			and name=#{name,jdbcType=VARCHAR}
+			and
+			pwd=#{pwd,jdbcType=VARCHAR}
+		</if>
+	</sql>
+</mapper>

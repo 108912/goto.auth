@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.dao.SysProjectMapper">
+  <resultMap id="BaseResultMap" type="com.auth.entity.SysProject">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="ordernum" jdbcType="BIGINT" property="ordernum" />
+    <result column="eisdel" jdbcType="BIT" property="eisdel" />
+    <result column="ectime" jdbcType="TIMESTAMP" property="ectime" />
+    <result column="eutime" jdbcType="TIMESTAMP" property="eutime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, code, note, ordernum, eisdel, ectime, eutime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_project
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    update  sys_project set eisdel=1
+    where  eisdel=0 and id =#{id,jdbcType=BIGINT}
+  </update>
+  <insert id="insert" useGeneratedKeys="true"  keyProperty="id" parameterType="com.auth.entity.SysProject">
+    insert into sys_project (id, name, code, 
+      note, ordernum, eisdel, 
+      ectime, eutime)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{note,jdbcType=VARCHAR}, #{ordernum,jdbcType=BIGINT}, #{eisdel,jdbcType=BIT}, 
+      #{ectime,jdbcType=TIMESTAMP}, #{eutime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true"  keyProperty="id" parameterType="com.auth.entity.SysProject">
+    insert into sys_project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="ordernum != null">
+        ordernum,
+      </if>
+      <if test="eisdel != null">
+        eisdel,
+      </if>
+      <if test="ectime != null">
+        ectime,
+      </if>
+      <if test="eutime != null">
+        eutime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="ordernum != null">
+        #{ordernum,jdbcType=BIGINT},
+      </if>
+      <if test="eisdel != null">
+        #{eisdel,jdbcType=BIT},
+      </if>
+      <if test="ectime != null">
+        #{ectime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="eutime != null">
+        #{eutime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.auth.entity.SysProject">
+    update sys_project
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="ordernum != null">
+        ordernum = #{ordernum,jdbcType=BIGINT},
+      </if>
+      <if test="eisdel != null">
+        eisdel = #{eisdel,jdbcType=BIT},
+      </if>
+      <if test="ectime != null">
+        ectime = #{ectime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="eutime != null">
+        eutime = #{eutime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.auth.entity.SysProject">
+    update sys_project
+    set name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      ordernum = #{ordernum,jdbcType=BIGINT},
+      eisdel = #{eisdel,jdbcType=BIT},
+      ectime = #{ectime,jdbcType=TIMESTAMP},
+      eutime = #{eutime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_project
+    where eisdel=0
+  </select>
+  <select id="selectByPagination" resultMap="BaseResultMap" parameterType="com.auth.condition.SysProjectCondition">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_project
+    where eisdel=0
+    <include refid="query_condition" />
+    LIMIT #{skip,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+  </select>
+  <select id="selectByPaginationCount" resultType="java.lang.Integer" parameterType="com.auth.condition.SysProjectCondition">
+    select count(0)
+    from sys_project
+    where eisdel=0
+    <include refid="query_condition" />
+  </select>
+  <sql id="query_condition">
+  <if test="id != null and id>0">
+        and id = #{id} 
+      </if>
+      <if test="name != null">
+        and name like CONCAT("%",#{name,jdbcType=VARCHAR},"%")
+      </if>
+      </sql>
+</mapper>

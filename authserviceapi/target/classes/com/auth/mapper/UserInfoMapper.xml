@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.dao.UserInfoMapper">
+	<resultMap id="BaseResultMap" type="com.auth.entity.UserInfo">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="code" jdbcType="VARCHAR" property="code" />
+		<result column="note" jdbcType="VARCHAR" property="note" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, name, code, note
+	</sql>
+	<select id="LoginValid" resultType="com.auth.entity.UserInfo"
+		parameterType="com.auth.condition.LoginCondition">
+		select
+		<include refid="Base_Column_List" />
+		from sys_user
+		where eisdel=0
+		<include refid="query_condition" />
+	</select>
+	<sql id="query_condition">
+		<if test="name != null">
+			and name=#{name,jdbcType=VARCHAR}
+			and pwd=#{pwd,jdbcType=VARCHAR}
+		</if>
+	</sql>
+	<select id="GetUserAuthMenu" resultType="com.auth.entity.UserAuthMenuInfo"
+		parameterType="com.auth.condition.UserAuthCondition">
+		select a2.menuid,a3.projectid,a3.parentid,a3.name,a3.code,a3.url from
+(select t1.userid,t2.permissionid from 
+	(select userid,orgid from sys_user_org where eisdel=0 and userid=#{userid,jdbcType=BIGINT}) t1
+	left 	JOIN
+	(select orgid,permissionid from sys_org_permission where eisdel=0) t2
+	on t1.orgid=t2.orgid
+union 
+select userid,permissionid from 
+	(select userid,roleid from sys_user_role where eisdel=0 and userid=#{userid,jdbcType=BIGINT}) t1
+	left 	JOIN
+	(select roleid,permissionid from sys_role_permission where eisdel=0) t2
+	on t1.roleid=t2.roleid) a1
+LEFT JOIN 
+(select permissionid,menuid from sys_permission_menu where eisdel=0) a2
+on a1.permissionid=a2.permissionid
+left JOIN
+(select * from sys_menu where eisdel=0 and projectid=#{projectid,jdbcType=BIGINT}) a3
+on a2.menuid=a3.id
+	</select>
+	<select id="GetUserAuthAction" resultType="com.auth.entity.UserAuthActionInfo"
+		parameterType="com.auth.condition.UserAuthCondition">
+		select a1.userid,a1.permissionid,a2.actionid,a3.projectid,a3.menuid,a3.name,a3.code from
+(select t1.userid,t2.permissionid from 
+	(select userid,orgid from sys_user_org where eisdel=0 and userid=#{userid,jdbcType=BIGINT}) t1
+	left 	JOIN
+	(select orgid,permissionid from sys_org_permission where eisdel=0) t2
+	on t1.orgid=t2.orgid
+union 
+select userid,permissionid from 
+	(select userid,roleid from sys_user_role where eisdel=0 and userid=#{userid,jdbcType=BIGINT}) t1
+	left 	JOIN
+	(select roleid,permissionid from sys_role_permission where eisdel=0) t2
+	on t1.roleid=t2.roleid) a1
+LEFT JOIN 
+(select permissionid,actionid from sys_permission_action where eisdel=0) a2
+on a1.permissionid=a2.permissionid
+left JOIN
+(select id,menuid,projectid,code,name from sys_action where eisdel=0 and projectid=#{projectid,jdbcType=BIGINT}) a3
+on a2.actionid=a3.id
+	</select>
+</mapper>
